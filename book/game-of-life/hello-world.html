@@ -528,6 +528,9 @@ wasm.greet();
 <blockquote>
 <p>私たちの Web ページがローカルで提供できるようになりました！</p>
 </blockquote>
+<blockquote>
+<p>（訳注） 今後も <code>hello-wasm-pack</code> は不要なので <code>npm r hello-wasm-pack</code> すればいいと思います。</p>
+</blockquote>
 <h2><a class="header" href="#serving-locally" id="serving-locally">Serving Locally</a></h2>
 <p>Next, open a new terminal for the development server. Running the server in a
 new terminal lets us leave it running in the background, and doesn't block us
@@ -541,7 +544,7 @@ command from within the <code>wasm-game-of-life/www</code> directory:</p>
 <p>Navigate your Web browser to <a href="http://localhost:8080/">http://localhost:8080/</a>
 and you should be greeted with an alert message:</p>
 <blockquote>
-<p>Web ブラウザで <a href="http://localhost:8080/">http://localhost:8080/</a> に移動すると、アラートメッセージが表示されるはずです。</p>
+<p>Web ブラウザーで <a href="http://localhost:8080/">http://localhost:8080/</a> に移動すると、アラートメッセージが表示されるはずです。</p>
 </blockquote>
 <p><a href="../images/game-of-life/hello-world.png"><img src="../images/game-of-life/hello-world.png" alt="Screenshot of the &quot;Hello, wasm-game-of-life!&quot; Web page alert" /></a></p>
 <p>Anytime you make changes and want them reflected on
@@ -550,7 +553,7 @@ and you should be greeted with an alert message:</p>
 <p>変更を加えて <a href="http://localhost:8080/">http://localhost:8080/</a> に反映させたい場合は、 <code>wasm-game-of-life</code> ディレクトリで <code>wasm-pack build</code> コマンドを再実行すればよいのです。</p>
 </blockquote>
 <blockquote>
-<p>（訳注） <code>wasm-pack watch</code> はないみたいです</p>
+<p>（訳注） <code>wasm-pack watch</code> は現状ないみたいです。 Issue にはワークアラウンドも。</p>
 <ul>
 <li>watch command · Issue #457 · rustwasm/wasm-pack<br />
 <a href="https://github.com/rustwasm/wasm-pack/issues/457">https://github.com/rustwasm/wasm-pack/issues/457</a></li>
@@ -566,7 +569,7 @@ should see a customized greeting!</li>
 </ul>
 <blockquote>
 <ul>
-<li><code>wasm-game-of-life/src/lib.rs</code> の <code>greet</code> 関数に <code>name: &amp;str</code> パラメータを取り、警告メッセージをカスタマイズするように修正し、 <code>wasm-game-of-life/www/index.js</code> 内から <code>greet</code> 関数にあなたの名前を渡します。 <code>.wasm</code> バイナリを <code>wasm-pack build</code> で再構築し、 Web ブラウザで <a href="http://localhost:8080/">http://localhost:8080/</a> を更新すると、カスタマイズされた挨拶文が表示されるはずです!</li>
+<li><code>wasm-game-of-life/src/lib.rs</code> の <code>greet</code> 関数に <code>name: &amp;str</code> パラメータを取り、警告メッセージをカスタマイズするように修正し、 <code>wasm-game-of-life/www/index.js</code> 内から <code>greet</code> 関数にあなたの名前を渡します。 <code>.wasm</code> バイナリを <code>wasm-pack build</code> で再構築し、 Web ブラウザーで <a href="http://localhost:8080/">http://localhost:8080/</a> を更新すると、カスタマイズされた挨拶文が表示されるはずです!</li>
 </ul>
 </blockquote>
 <details>

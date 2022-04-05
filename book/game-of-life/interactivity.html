@@ -168,9 +168,15 @@
 some interactive features to our Game of Life implementation. We will enable
 users to toggle whether a cell is alive or dead by clicking on it, and
 allow pausing the game, which makes drawing cell patterns a lot easier.</p>
+<blockquote>
+<p>ライフゲームの実装にいくつかのインタラクティブな機能を追加することで、 JavaScript と WebAssembly のインターフェースを引き続き探求していきます。私たちは、ユーザーによるセルクリックで生死を切り替えられるようにしたり、ゲームを一時停止できるようにしてセルパターンをより簡単に描けるようにする予定です。</p>
+</blockquote>
 <h2><a class="header" href="#pausing-and-resuming-the-game" id="pausing-and-resuming-the-game">Pausing and Resuming the Game</a></h2>
 <p>Let's add a button to toggle whether the game is playing or paused. To
 <code>wasm-game-of-life/www/index.html</code>, add the button right above the <code>&lt;canvas&gt;</code>:</p>
+<blockquote>
+<p>ゲームの再生／一時停止を切り替えるボタンを追加しましょう。 <code>wasm-game-of-life/www/index.html</code> の <code>&lt;canvas&gt;</code> のすぐ上にボタンを追加してください。</p>
+</blockquote>
 <pre><code class="language-html">&lt;button id=&quot;play-pause&quot;&gt;&lt;/button&gt;
 </code></pre>
 <p>In the <code>wasm-game-of-life/www/index.js</code> JavaScript, we will make the following
@@ -195,6 +201,15 @@ to do, and we don't need to change the Rust sources.</p>
 <p>We introduce the <code>animationId</code> variable to keep track of the identifier returned
 by <code>requestAnimationFrame</code>. When there is no queued animation frame, we set this
 variable to <code>null</code>.</p>
+<blockquote>
+<p>JavaScript <code>wasm-game-of-life/www/index.js</code> には以下のように変更を入れます。</p>
+<ul>
+<li>直近の <code>requestAnimationFrame</code> の呼び出しで返された識別子を記録しておき、その識別子で <code>cancelAnimationFrame</code> を呼び出すことでアニメーションをキャンセルできるようにします。</li>
+<li>再生／一時停止ボタンがクリックされたら、待機中のアニメーションフレーム識別子があるかどうかをチェックします。もしあればゲームは現在再生中であり、アニメーションフレームをキャンセルして <code>renderLoop</code> が再び呼び出されないようにすることで、実質的にゲームを一時停止させます。待機中のアニメーションフレーム識別子がない場合は一時停止中であり、 <code>requestAnimationFrame</code> を呼び出してゲームを再開します。</li>
+</ul>
+<p>JavaScript が Rust と WebAssembly を動かして（drive）いるので、必要なのはこれだけで、 Rust のソースを変更する必要はありません。</p>
+<p><code>requestAnimationFrame</code> が返す識別子を追跡するために <code>animationId</code> 変数を導入します。待機中のアニメーションフレームがない場合、この変数に <code>null</code> を設定します。</p>
+</blockquote>
 <pre><code class="language-js">let animationId = null;
 
 // This function is the same as before, except the
@@ -211,6 +226,9 @@ const renderLoop = () =&gt; {
 </code></pre>
 <p>At any instant in time, we can tell whether the game is paused or not by
 inspecting the value of <code>animationId</code>:</p>
+<blockquote>
+<p>任意の瞬間において、ゲームが一時停止しているかどうかは <code>animationId</code> の値から判断できます。</p>
+</blockquote>
 <pre><code class="language-js">const isPaused = () =&gt; {
   return animationId === null;
 };
@@ -219,6 +237,9 @@ inspecting the value of <code>animationId</code>:</p>
 currently paused or playing, and resume the <code>renderLoop</code> animation or cancel the
 next animation frame respectively. Additionally, we update the button's text
 icon to reflect the action that the button will take when clicked next.</p>
+<blockquote>
+<p>これで、再生／一時停止ボタンがクリックされると、現在ゲームが一時停止中か再生中かをチェックし、それぞれ <code>renderLoop</code> アニメーションを再開するか、次のアニメーションフレームをキャンセルするようになりました。さらに、ボタンのテキストアイコンを更新し、次にクリックされたときにボタンが取るアクションを反映します。</p>
+</blockquote>
 <pre><code class="language-js">const playPauseButton = document.getElementById(&quot;play-pause&quot;);
 
 const play = () =&gt; {
@@ -243,16 +264,26 @@ playPauseButton.addEventListener(&quot;click&quot;, event =&gt; {
 <p>Finally, we were previously kick-starting the game and its animation by calling
 <code>requestAnimationFrame(renderLoop)</code> directly, but we want to replace that with a
 call to <code>play</code> so that the button gets the correct initial text icon.</p>
+<blockquote>
+<p>最後に、以前は <code>requestAnimationFrame(renderLoop)</code> を直接呼び出してゲームとそのアニメーションを開始していましたが、これを <code>play</code> の呼び出しに置き換え、ボタンが正しい初期テキストアイコンを取得できるようにします。</p>
+</blockquote>
 <pre><code class="language-diff">// This used to be `requestAnimationFrame(renderLoop)`.
 play();
 </code></pre>
 <p>Refresh <a href="http://localhost:8080/">http://localhost:8080/</a> and we should now be
 able to pause and resume the game by clicking on the button!</p>
+<blockquote>
+<p><a href="http://localhost:8080/">http://localhost:8080/</a> をリフレッシュすれば、ボタンをクリックすることでゲームの一時停止と再開ができるようになったはずです。</p>
+</blockquote>
 <h2><a class="header" href="#toggling-a-cells-state-on-click-events" id="toggling-a-cells-state-on-click-events">Toggling a Cell's State on <code>&quot;click&quot;</code> Events</a></h2>
 <p>Now that we can pause the game, it's time to add the ability to mutate the cells
 by clicking on them.</p>
 <p>To toggle a cell is to flip its state from alive to dead or from dead to
 alive. Add a <code>toggle</code> method to <code>Cell</code> in <code>wasm-game-of-life/src/lib.rs</code>:</p>
+<blockquote>
+<p>ゲームを一時停止できるようになったので、次はセルをクリックして変更する機能を追加します。</p>
+<p>セルをトグルするというのは、セルの状態を生から死、死から生に反転させることです。 <code>wasm-game-of-life/src/lib.rs</code> にある <code>Cell</code> に <code>toggle</code> メソッドを追加します。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -269,6 +300,9 @@ alive. Add a <code>toggle</code> method to <code>Cell</code> in <code>wasm-game-
 <p>To toggle the state of a cell at given row and column, we translate the row and
 column pair into an index into the cells vector and call the toggle method on
 the cell at that index:</p>
+<blockquote>
+<p>ある行と列のセルの状態を切り替えるには、行と列のペアをセルベクトルのインデックスに変換し、そのインデックスのセルに対して <code>toggle</code> メソッドを呼び出します。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -290,6 +324,10 @@ impl Universe {
 element, translate the click event's page-relative coordinates into
 canvas-relative coordinates, and then into a row and column, invoke the
 <code>toggle_cell</code> method, and finally redraw the scene.</p>
+<blockquote>
+<p>このメソッドは、 JavaScript から呼び出せるように <code>#[wasm_bindgen]</code> のアノテーションをつけた <code>impl</code> ブロックの中で定義されています。</p>
+<p><code>wasm-game-of-life/www/index.js</code> では、 <code>&lt;canvas&gt;</code> 要素のクリックイベントを listen し、クリックイベントのページ相対座標をキャンバス相対座標に変換し、さらに行と列に変換して、 <code>toggle_cell</code> メソッドを呼び出し、最後にシーンを再描画しています。</p>
+</blockquote>
 <pre><code class="language-js">canvas.addEventListener(&quot;click&quot;, event =&gt; {
   const boundingRect = canvas.getBoundingClientRect();
 
@@ -311,6 +349,9 @@ canvas-relative coordinates, and then into a row and column, invoke the
 <p>Rebuild with <code>wasm-pack build</code> in <code>wasm-game-of-life</code>, then refresh
 <a href="http://localhost:8080/">http://localhost:8080/</a> again and we can now draw our
 own patterns by clicking on the cells and toggling their state.</p>
+<blockquote>
+<p><code>wasm-game-of-life</code> 内で <code>wasm-pack build</code> によってリビルドし、再度 <a href="http://localhost:8080/">http://localhost:8080/</a> をリフレッシュすると、セルクリックで状態を切り替えることにより好きなパターンを描画できるようになります。</p>
+</blockquote>
 <h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
 <ul>
 <li>
@@ -327,6 +368,13 @@ clicked. Another button that resets the universe to all dead cells.</p>
 the target cell. On <code>Shift + Click</code>, insert a pulsar.</p>
 </li>
 </ul>
+<blockquote>
+<ul>
+<li><code>&lt;input type=&quot;range&quot;&gt;</code> ウィジェットを導入し、アニメーションのフレームごとに発生する tick の数を制御しましょう。</li>
+<li>クリックするとユニバースをランダムな初期状態にリセットするボタンを追加しましょう。さらに、ユニバースをすべて死んだセルにリセットするボタンを追加しましょう。</li>
+<li><code>Ctrl + クリック</code> でターゲットセルを中心とするグライダーを挿入するようにしましょう。 <code>Shift + クリック</code> でパルサーを挿入するようにしましょう。</li>
+</ul>
+</blockquote>
 
                     </main>
 

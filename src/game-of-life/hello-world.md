@@ -447,7 +447,7 @@ npm run start
 Navigate your Web browser to [http://localhost:8080/](http://localhost:8080/)
 and you should be greeted with an alert message:
 
-> Web ブラウザで [http://localhost:8080/](http://localhost:8080/) に移動すると、アラートメッセージが表示されるはずです。
+> Web ブラウザーで [http://localhost:8080/](http://localhost:8080/) に移動すると、アラートメッセージが表示されるはずです。
 
 [![Screenshot of the "Hello, wasm-game-of-life!" Web page alert](../images/game-of-life/hello-world.png)](../images/game-of-life/hello-world.png)
 
@@ -471,7 +471,7 @@ build` command within the `wasm-game-of-life` directory.
   [http://localhost:8080/](http://localhost:8080/) in your Web browser and you
   should see a customized greeting!
 
-> * `wasm-game-of-life/src/lib.rs` の `greet` 関数に `name: &str` パラメータを取り、警告メッセージをカスタマイズするように修正し、 `wasm-game-of-life/www/index.js` 内から `greet` 関数にあなたの名前を渡します。 `.wasm` バイナリを `wasm-pack build` で再構築し、 Web ブラウザで [http://localhost:8080/](http://localhost:8080/) を更新すると、カスタマイズされた挨拶文が表示されるはずです!
+> * `wasm-game-of-life/src/lib.rs` の `greet` 関数に `name: &str` パラメータを取り、警告メッセージをカスタマイズするように修正し、 `wasm-game-of-life/www/index.js` 内から `greet` 関数にあなたの名前を渡します。 `.wasm` バイナリを `wasm-pack build` で再構築し、 Web ブラウザーで [http://localhost:8080/](http://localhost:8080/) を更新すると、カスタマイズされた挨拶文が表示されるはずです!
 
   <details>
     <summary>Answer</summary>

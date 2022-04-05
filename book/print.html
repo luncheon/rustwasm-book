@@ -723,6 +723,9 @@ wasm.greet();
 <blockquote>
 <p>私たちの Web ページがローカルで提供できるようになりました！</p>
 </blockquote>
+<blockquote>
+<p>（訳注） 今後も <code>hello-wasm-pack</code> は不要なので <code>npm r hello-wasm-pack</code> すればいいと思います。</p>
+</blockquote>
 <h2><a class="header" href="#serving-locally" id="serving-locally">Serving Locally</a></h2>
 <p>Next, open a new terminal for the development server. Running the server in a
 new terminal lets us leave it running in the background, and doesn't block us
@@ -736,7 +739,7 @@ command from within the <code>wasm-game-of-life/www</code> directory:</p>
 <p>Navigate your Web browser to <a href="http://localhost:8080/">http://localhost:8080/</a>
 and you should be greeted with an alert message:</p>
 <blockquote>
-<p>Web ブラウザで <a href="http://localhost:8080/">http://localhost:8080/</a> に移動すると、アラートメッセージが表示されるはずです。</p>
+<p>Web ブラウザーで <a href="http://localhost:8080/">http://localhost:8080/</a> に移動すると、アラートメッセージが表示されるはずです。</p>
 </blockquote>
 <p><a href="game-of-life/../images/game-of-life/hello-world.png"><img src="game-of-life/../images/game-of-life/hello-world.png" alt="Screenshot of the &quot;Hello, wasm-game-of-life!&quot; Web page alert" /></a></p>
 <p>Anytime you make changes and want them reflected on
@@ -745,7 +748,7 @@ and you should be greeted with an alert message:</p>
 <p>変更を加えて <a href="http://localhost:8080/">http://localhost:8080/</a> に反映させたい場合は、 <code>wasm-game-of-life</code> ディレクトリで <code>wasm-pack build</code> コマンドを再実行すればよいのです。</p>
 </blockquote>
 <blockquote>
-<p>（訳注） <code>wasm-pack watch</code> はないみたいです</p>
+<p>（訳注） <code>wasm-pack watch</code> は現状ないみたいです。 Issue にはワークアラウンドも。</p>
 <ul>
 <li>watch command · Issue #457 · rustwasm/wasm-pack<br />
 <a href="https://github.com/rustwasm/wasm-pack/issues/457">https://github.com/rustwasm/wasm-pack/issues/457</a></li>
@@ -761,7 +764,7 @@ should see a customized greeting!</li>
 </ul>
 <blockquote>
 <ul>
-<li><code>wasm-game-of-life/src/lib.rs</code> の <code>greet</code> 関数に <code>name: &amp;str</code> パラメータを取り、警告メッセージをカスタマイズするように修正し、 <code>wasm-game-of-life/www/index.js</code> 内から <code>greet</code> 関数にあなたの名前を渡します。 <code>.wasm</code> バイナリを <code>wasm-pack build</code> で再構築し、 Web ブラウザで <a href="http://localhost:8080/">http://localhost:8080/</a> を更新すると、カスタマイズされた挨拶文が表示されるはずです!</li>
+<li><code>wasm-game-of-life/src/lib.rs</code> の <code>greet</code> 関数に <code>name: &amp;str</code> パラメータを取り、警告メッセージをカスタマイズするように修正し、 <code>wasm-game-of-life/www/index.js</code> 内から <code>greet</code> 関数にあなたの名前を渡します。 <code>.wasm</code> バイナリを <code>wasm-pack build</code> で再構築し、 Web ブラウザーで <a href="http://localhost:8080/">http://localhost:8080/</a> を更新すると、カスタマイズされた挨拶文が表示されるはずです!</li>
 </ul>
 </blockquote>
 <details>
@@ -1564,6 +1567,11 @@ output that we expect.</p>
 functions inside our existing <code>impl Universe</code> block in the
 <code>wasm_game_of_life/src/lib.rs</code> file. We are going to create a <code>set_width</code>
 and a <code>set_height</code> function so we can create <code>Universe</code>s of different sizes.</p>
+<blockquote>
+<p>Rust で実装したライフゲームが JavaScript でブラウザーにレンダリングされるようになりました。では、 Rust で生成された WebAssembly 関数のテストについて説明します。</p>
+<p>まず、 <code>tick</code> 関数をテストして、期待通りの出力が得られるかどうかを確認します。</p>
+<p>次に、 <code>wasm_game_of_life/src/lib.rs</code> ファイルにある <code>impl Universe</code> ブロックの中に setter と getter を作成したいと思います。 <code>set_width</code> と <code>set_height</code> 関数を作成し、異なるサイズの <code>Universe</code> を作成できるようにします。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1599,6 +1607,10 @@ attribute and take a look at the errors you get.</p>
 <p>We are going to write the implementation of <code>get_cells</code> to get the contents of
 the <code>cells</code> of a <code>Universe</code>. We'll also write a <code>set_cells</code> function so we can
 set <code>cells</code> in a specific row and column of a <code>Universe</code> to be <code>Alive.</code></p>
+<blockquote>
+<p><code>wasm_game_of_life/src/lib.rs</code> ファイル内に、 <code>#[wasm_bindgen]</code> 属性なしで別の <code>impl Universe</code> ブロックを作成します。テストに必要な関数の中には、 JavaScript に公開したくないものがいくつかあります。 Rust で生成された WebAssembly の関数は、借用した参照を返すことができません。 Rust で生成された WebAssembly を <code>#[wasm_bindgen]</code> 属性付きでコンパイルして、エラーを見てみましょう。</p>
+<p><code>Universe</code> の <code>cells</code> の中身を取得するための <code>get_cells</code> の実装を書きます。また、 <code>Universe</code> の特定の行と列にある <code>cells</code> を <code>Alive</code> に設定できるように <code>set_cells</code> 関数を記述します。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1626,8 +1638,22 @@ confirm that the Rust-generated WebAssembly test is working by running
 <code>wasm-pack test --chrome --headless</code> in the <code>wasm-game-of-life</code> directory.
 You can also use the <code>--firefox</code>, <code>--safari</code>, and <code>--node</code> options to
 test your code in those browsers.</p>
+<blockquote>
+<p>では、 <code>wasm_game_of_life/tests/web.rs</code> ファイルの中にテストを作成します。</p>
+<p>その前に、このファイルにはすでに 1 つ動作するテストがあります。 <code>wasm-game-of-life</code> ディレクトリで <code>wasm-pack test --chrome --headless</code> を実行すると、 Rust が生成した WebAssembly のテストが動作していることを確認できます。また、 <code>--firefox</code>, <code>--safari</code>, <code>--node</code> オプションを使用すると、それらのブラウザーでコードをテストできます。</p>
+</blockquote>
+<blockquote>
+<p>（訳注） ブラウザーでテストする場合はテストコードに <code>wasm_bindgen_test_configure!(run_in_browser);</code> を含める必要があるようです。 Node.js でテストする場合はテストコードに <code>wasm_bindgen_test_configure!(run_in_browser);</code> を含めてはいけないようです。（コマンドラインオプションだけで切り替えられるようにしてほしいところです。）</p>
+</blockquote>
 <p>In the <code>wasm_game_of_life/tests/web.rs</code> file, we need to export our
 <code>wasm_game_of_life</code> crate and the <code>Universe</code> type.</p>
+<blockquote>
+<p><code>wasm_game_of_life/tests/web.rs</code> ファイルでは、 <code>wasm_game_of_life</code> クレートと <code>Universe</code> 型をエクスポートする必要があります。</p>
+</blockquote>
+<blockquote>
+<p>（訳注） Rust 2018 以降、 <code>extern crate</code> は不要です。<br />
+<a href="https://doc.rust-jp.rs/edition-guide/rust-2018/path-changes.html#%E3%81%95%E3%82%88%E3%81%86%E3%81%AA%E3%82%89extern-crate">https://doc.rust-jp.rs/edition-guide/rust-2018/path-changes.html#%E3%81%95%E3%82%88%E3%81%86%E3%81%AA%E3%82%89extern-crate</a></p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1644,6 +1670,10 @@ cells that we want to initialize as <code>Alive</code> to create our spaceship i
 <code>expected_spaceship</code> function after the tick of the <code>input_spaceship</code> was
 calculated manually. You can confirm for yourself that the cells of the input
 spaceship after one tick is the same as the expected spaceship.</p>
+<blockquote>
+<p><code>wasm_game_of_life/tests/web.rs</code> ファイルに、いくつかのスペースシップビルダー関数を作成したいと思います。</p>
+<p><code>tick</code> 関数を呼び出す前の入力スペースシップと、その 1 tick 後の期待値スペースシップがほしいところです。 <code>input_spaceship</code> 関数で、スペースシップを作るために <code>Alive</code> として初期化したいセルを選びました。 <code>input_spaceship</code> から 1 tick 後を表す <code>expected_spaceship</code> 関数の <code>Alive</code> セルは手で計算しました。入力されたスペースシップの 1 tick 後のセルが期待されるスペースシップと同じであることを自分で確認できます。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1674,6 +1704,9 @@ macro to call <code>get_cells()</code> to ensure that <code>input_universe</code
 <code>#[wasm_bindgen_test]</code> attribute to our code block so we can test our
 Rust-generated WebAssembly code and use <code>wasm-pack test</code> to test the
 WebAssembly code.</p>
+<blockquote>
+<p>それでは、 <code>test_tick</code> 関数の実装を書きましょう。まず、 <code>input_spaceship()</code> と <code>expected_spaceship()</code> のインスタンスを作成します。そして、 <code>input_universe</code> に対して <code>tick</code> を呼び出します。最後に、 <code>assert_eq!</code> マクロを使用して <code>get_cells()</code> を呼び出し、 <code>input_universe</code> と <code>expected_universe</code> が同じ <code>Cell</code> 配列の値を持っていることを確認します。 Rust で生成した WebAssembly のコードをテストできるように、コードブロックに <code>#[wasm_bindgen_test]</code> 属性を追加し、 <code>wasm-pack test</code> を使って WebAssembly のコードをテストしています。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1694,11 +1727,17 @@ pub fn test_tick() {
 </span></code></pre></pre>
 <p>Run the tests within the <code>wasm-game-of-life</code> directory by running
 <code>wasm-pack test --firefox --headless</code>.</p>
+<blockquote>
+<p><code>wasm-pack test --firefox --headless</code> を実行して <code>wasm-game-of-life</code> ディレクトリ内のテストを実行します。</p>
+</blockquote>
 <h1><a class="header" href="#debugging" id="debugging">Debugging</a></h1>
 <p>Before we write much more code, we will want to have some debugging tools in our
 belt for when things go wrong. Take a moment to review the <a href="game-of-life/../reference/debugging.html">reference page
 listing tools and approaches available for debugging Rust-generated
 WebAssembly</a>.</p>
+<blockquote>
+<p>さらにコードを書いていく前に、うまくいかないときのためにデバッグツールを用意しておくとよいでしょう。 <a href="game-of-life/../reference/debugging.html">Rust で生成された WebAssembly をデバッグするために利用できるツールやアプローチの一覧は、リファレンスページをご覧ください。</a></p>
+</blockquote>
 <h2><a class="header" href="#enable-logging-for-panics" id="enable-logging-for-panics">Enable Logging for Panics</a></h2>
 <p><a href="game-of-life/../reference/debugging.html#logging-panics">If our code panics, we want informative error messages to appear in the
 developer console.</a></p>
@@ -1707,6 +1746,10 @@ on <a href="https://github.com/rustwasm/console_error_panic_hook">the <code>cons
 <code>wasm-game-of-life/src/utils.rs</code>. All we need to do is install the hook in an
 initialization function or common code path. We can call it inside the
 <code>Universe::new</code> constructor in <code>wasm-game-of-life/src/lib.rs</code>:</p>
+<blockquote>
+<p><a href="game-of-life/../reference/debugging.html#logging-panics">コードがパニックに陥ったとき、開発者コンソールに有益なエラーメッセージが表示されるようにしたいです。</a></p>
+<p><code>wasm-pack-template</code> には、オプション（デフォルト有効）で <a href="game-of-life/panic-hook"><code>console_error_panic_hook</code> クレート</a> に依存しており、これは <code>wasm-game-of-life/src/utils.rs</code> で構成されています。必要なことは、初期化関数や共通のコードパスにフックをインストールすることだけです。 <code>wasm-game-of-life/src/lib.rs</code> にある <code>Universe::new</code> コンストラクタの中で呼び出すことができます。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1722,6 +1765,10 @@ initialization function or common code path. We can call it inside the
 logging</a> about each cell in our <code>Universe::tick</code> function.</p>
 <p>First, add <code>web-sys</code> as a dependency and enable its <code>&quot;console&quot;</code> feature in
 <code>wasm-game-of-life/Cargo.toml</code>:</p>
+<blockquote>
+<p><code>Universe::tick</code> 関数で各セルに関するログを追加するために、 <a href="game-of-life/../reference/debugging.html#logging-with-the-console-apis"><code>web-sys</code> クレートを介して <code>console.log</code> 関数を使用</a>してみましょう。</p>
+<p>まず、 <code>web-sys</code> を依存関係として追加し、 <code>wasm-game-of-life/Cargo.toml</code> でその <code>&quot;console&quot;</code> 機能を有効にします。</p>
+</blockquote>
 <pre><code class="language-toml">[dependencies]
 
 # ...
@@ -1734,6 +1781,9 @@ features = [
 </code></pre>
 <p>For ergonomics, we'll wrap the <code>console.log</code> function up in a <code>println!</code>-style
 macro:</p>
+<blockquote>
+<p>人間工学を考慮して、 <code>console.log</code> 関数を <code>println!</code> スタイルのマクロでラップしてみましょう。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1750,6 +1800,9 @@ macro_rules! log {
 <p>Now, we can start logging messages to the console by inserting calls to <code>log</code> in
 Rust code. For example, to log each cell's state, live neighbors count, and next
 state, we could modify <code>wasm-game-of-life/src/lib.rs</code> like this:</p>
+<blockquote>
+<p>これで、 Rust のコードに <code>log</code> の呼び出しを挿入して、コンソールへのメッセージロギングを始められます。たとえば、各セルの状態、生存隣接セル数、次の状態をログ出力するには、 <code>wasm-game-of-life/src/lib.rs</code> を以下のように変更します。</p>
+</blockquote>
 <pre><code class="language-diff">diff --git a/src/lib.rs b/src/lib.rs
 index f757641..a30e107 100755
 --- a/src/lib.rs
@@ -1786,6 +1839,10 @@ with.</a></p>
 <p>For example, we can use the debugger to pause on each iteration of our
 <code>renderLoop</code> function by placing <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger">a JavaScript <code>debugger;</code> statement</a>
 above our call to <code>universe.tick()</code>.</p>
+<blockquote>
+<p><a href="game-of-life/../reference/debugging.html#using-a-debugger">ブラウザーのステッピングデバッガは、 Rust で生成された WebAssembly と相互作用する JavaScript を検査（inspect）するのに便利です。</a></p>
+<p>たとえば、 <code>universe.tick()</code> の呼び出し直前に <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger">JavaScript の <code>debugger;</code> ステートメント</a> を置いて、 <code>renderLoop</code> 関数の各イテレーションで一時停止するためにデバッガを利用できます。</p>
+</blockquote>
 <pre><code class="language-js">const renderLoop = () =&gt; {
   debugger;
   universe.tick();
@@ -1798,6 +1855,9 @@ above our call to <code>universe.tick()</code>.</p>
 </code></pre>
 <p>This provides us with a convenient checkpoint for inspecting logged messages,
 and comparing the currently rendered frame to the previous one.</p>
+<blockquote>
+<p>これにより、ログに記録されたメッセージを検査したり、現在レンダリングされているフレームと前のフレームを比較したりするのに便利なチェックポイントが提供されます。</p>
+</blockquote>
 <p><a href="game-of-life/../images/game-of-life/debugging.png"><img src="game-of-life/../images/game-of-life/debugging.png" alt="Screenshot of debugging the Game of Life" /></a></p>
 <h2><a class="header" href="#exercises-3" id="exercises-3">Exercises</a></h2>
 <ul>
@@ -1812,14 +1872,26 @@ rebuild without the <code>console_error_panic_hook</code> optional dependency, a
 inspect the stack trace again. Not as useful is it?</p>
 </li>
 </ul>
+<blockquote>
+<ul>
+<li><code>tick</code> 機能にログを追加し、生から死、またはその逆へと状態が遷移した各セルの行と列を記録しましょう。</li>
+<li><code>Universe::new</code> メソッドに <code>panic!()</code> を導入しましょう。 Web ブラウザーの JavaScript デバッガで panic のバックトレースを検査します。デバッグシンボルを無効にし、オプションの依存関係 <code>console_error_panic_hook</code> なしで再構築し、再びスタックトレースを検査します。不便でしょ？</li>
+</ul>
+</blockquote>
 <h1><a class="header" href="#adding-interactivity" id="adding-interactivity">Adding Interactivity</a></h1>
 <p>We will continue to explore the JavaScript and WebAssembly interface by adding
 some interactive features to our Game of Life implementation. We will enable
 users to toggle whether a cell is alive or dead by clicking on it, and
 allow pausing the game, which makes drawing cell patterns a lot easier.</p>
+<blockquote>
+<p>ライフゲームの実装にいくつかのインタラクティブな機能を追加することで、 JavaScript と WebAssembly のインターフェースを引き続き探求していきます。私たちは、ユーザーによるセルクリックで生死を切り替えられるようにしたり、ゲームを一時停止できるようにしてセルパターンをより簡単に描けるようにする予定です。</p>
+</blockquote>
 <h2><a class="header" href="#pausing-and-resuming-the-game" id="pausing-and-resuming-the-game">Pausing and Resuming the Game</a></h2>
 <p>Let's add a button to toggle whether the game is playing or paused. To
 <code>wasm-game-of-life/www/index.html</code>, add the button right above the <code>&lt;canvas&gt;</code>:</p>
+<blockquote>
+<p>ゲームの再生／一時停止を切り替えるボタンを追加しましょう。 <code>wasm-game-of-life/www/index.html</code> の <code>&lt;canvas&gt;</code> のすぐ上にボタンを追加してください。</p>
+</blockquote>
 <pre><code class="language-html">&lt;button id=&quot;play-pause&quot;&gt;&lt;/button&gt;
 </code></pre>
 <p>In the <code>wasm-game-of-life/www/index.js</code> JavaScript, we will make the following
@@ -1844,6 +1916,15 @@ to do, and we don't need to change the Rust sources.</p>
 <p>We introduce the <code>animationId</code> variable to keep track of the identifier returned
 by <code>requestAnimationFrame</code>. When there is no queued animation frame, we set this
 variable to <code>null</code>.</p>
+<blockquote>
+<p>JavaScript <code>wasm-game-of-life/www/index.js</code> には以下のように変更を入れます。</p>
+<ul>
+<li>直近の <code>requestAnimationFrame</code> の呼び出しで返された識別子を記録しておき、その識別子で <code>cancelAnimationFrame</code> を呼び出すことでアニメーションをキャンセルできるようにします。</li>
+<li>再生／一時停止ボタンがクリックされたら、待機中のアニメーションフレーム識別子があるかどうかをチェックします。もしあればゲームは現在再生中であり、アニメーションフレームをキャンセルして <code>renderLoop</code> が再び呼び出されないようにすることで、実質的にゲームを一時停止させます。待機中のアニメーションフレーム識別子がない場合は一時停止中であり、 <code>requestAnimationFrame</code> を呼び出してゲームを再開します。</li>
+</ul>
+<p>JavaScript が Rust と WebAssembly を動かして（drive）いるので、必要なのはこれだけで、 Rust のソースを変更する必要はありません。</p>
+<p><code>requestAnimationFrame</code> が返す識別子を追跡するために <code>animationId</code> 変数を導入します。待機中のアニメーションフレームがない場合、この変数に <code>null</code> を設定します。</p>
+</blockquote>
 <pre><code class="language-js">let animationId = null;
 
 // This function is the same as before, except the
@@ -1860,6 +1941,9 @@ const renderLoop = () =&gt; {
 </code></pre>
 <p>At any instant in time, we can tell whether the game is paused or not by
 inspecting the value of <code>animationId</code>:</p>
+<blockquote>
+<p>任意の瞬間において、ゲームが一時停止しているかどうかは <code>animationId</code> の値から判断できます。</p>
+</blockquote>
 <pre><code class="language-js">const isPaused = () =&gt; {
   return animationId === null;
 };
@@ -1868,6 +1952,9 @@ inspecting the value of <code>animationId</code>:</p>
 currently paused or playing, and resume the <code>renderLoop</code> animation or cancel the
 next animation frame respectively. Additionally, we update the button's text
 icon to reflect the action that the button will take when clicked next.</p>
+<blockquote>
+<p>これで、再生／一時停止ボタンがクリックされると、現在ゲームが一時停止中か再生中かをチェックし、それぞれ <code>renderLoop</code> アニメーションを再開するか、次のアニメーションフレームをキャンセルするようになりました。さらに、ボタンのテキストアイコンを更新し、次にクリックされたときにボタンが取るアクションを反映します。</p>
+</blockquote>
 <pre><code class="language-js">const playPauseButton = document.getElementById(&quot;play-pause&quot;);
 
 const play = () =&gt; {
@@ -1892,16 +1979,26 @@ playPauseButton.addEventListener(&quot;click&quot;, event =&gt; {
 <p>Finally, we were previously kick-starting the game and its animation by calling
 <code>requestAnimationFrame(renderLoop)</code> directly, but we want to replace that with a
 call to <code>play</code> so that the button gets the correct initial text icon.</p>
+<blockquote>
+<p>最後に、以前は <code>requestAnimationFrame(renderLoop)</code> を直接呼び出してゲームとそのアニメーションを開始していましたが、これを <code>play</code> の呼び出しに置き換え、ボタンが正しい初期テキストアイコンを取得できるようにします。</p>
+</blockquote>
 <pre><code class="language-diff">// This used to be `requestAnimationFrame(renderLoop)`.
 play();
 </code></pre>
 <p>Refresh <a href="http://localhost:8080/">http://localhost:8080/</a> and we should now be
 able to pause and resume the game by clicking on the button!</p>
+<blockquote>
+<p><a href="http://localhost:8080/">http://localhost:8080/</a> をリフレッシュすれば、ボタンをクリックすることでゲームの一時停止と再開ができるようになったはずです。</p>
+</blockquote>
 <h2><a class="header" href="#toggling-a-cells-state-on-click-events" id="toggling-a-cells-state-on-click-events">Toggling a Cell's State on <code>&quot;click&quot;</code> Events</a></h2>
 <p>Now that we can pause the game, it's time to add the ability to mutate the cells
 by clicking on them.</p>
 <p>To toggle a cell is to flip its state from alive to dead or from dead to
 alive. Add a <code>toggle</code> method to <code>Cell</code> in <code>wasm-game-of-life/src/lib.rs</code>:</p>
+<blockquote>
+<p>ゲームを一時停止できるようになったので、次はセルをクリックして変更する機能を追加します。</p>
+<p>セルをトグルするというのは、セルの状態を生から死、死から生に反転させることです。 <code>wasm-game-of-life/src/lib.rs</code> にある <code>Cell</code> に <code>toggle</code> メソッドを追加します。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1918,6 +2015,9 @@ alive. Add a <code>toggle</code> method to <code>Cell</code> in <code>wasm-game-
 <p>To toggle the state of a cell at given row and column, we translate the row and
 column pair into an index into the cells vector and call the toggle method on
 the cell at that index:</p>
+<blockquote>
+<p>ある行と列のセルの状態を切り替えるには、行と列のペアをセルベクトルのインデックスに変換し、そのインデックスのセルに対して <code>toggle</code> メソッドを呼び出します。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -1939,6 +2039,10 @@ impl Universe {
 element, translate the click event's page-relative coordinates into
 canvas-relative coordinates, and then into a row and column, invoke the
 <code>toggle_cell</code> method, and finally redraw the scene.</p>
+<blockquote>
+<p>このメソッドは、 JavaScript から呼び出せるように <code>#[wasm_bindgen]</code> のアノテーションをつけた <code>impl</code> ブロックの中で定義されています。</p>
+<p><code>wasm-game-of-life/www/index.js</code> では、 <code>&lt;canvas&gt;</code> 要素のクリックイベントを listen し、クリックイベントのページ相対座標をキャンバス相対座標に変換し、さらに行と列に変換して、 <code>toggle_cell</code> メソッドを呼び出し、最後にシーンを再描画しています。</p>
+</blockquote>
 <pre><code class="language-js">canvas.addEventListener(&quot;click&quot;, event =&gt; {
   const boundingRect = canvas.getBoundingClientRect();
 
@@ -1960,6 +2064,9 @@ canvas-relative coordinates, and then into a row and column, invoke the
 <p>Rebuild with <code>wasm-pack build</code> in <code>wasm-game-of-life</code>, then refresh
 <a href="http://localhost:8080/">http://localhost:8080/</a> again and we can now draw our
 own patterns by clicking on the cells and toggling their state.</p>
+<blockquote>
+<p><code>wasm-game-of-life</code> 内で <code>wasm-pack build</code> によってリビルドし、再度 <a href="http://localhost:8080/">http://localhost:8080/</a> をリフレッシュすると、セルクリックで状態を切り替えることにより好きなパターンを描画できるようになります。</p>
+</blockquote>
 <h2><a class="header" href="#exercises-4" id="exercises-4">Exercises</a></h2>
 <ul>
 <li>
@@ -1976,6 +2083,13 @@ clicked. Another button that resets the universe to all dead cells.</p>
 the target cell. On <code>Shift + Click</code>, insert a pulsar.</p>
 </li>
 </ul>
+<blockquote>
+<ul>
+<li><code>&lt;input type=&quot;range&quot;&gt;</code> ウィジェットを導入し、アニメーションのフレームごとに発生する tick の数を制御しましょう。</li>
+<li>クリックするとユニバースをランダムな初期状態にリセットするボタンを追加しましょう。さらに、ユニバースをすべて死んだセルにリセットするボタンを追加しましょう。</li>
+<li><code>Ctrl + クリック</code> でターゲットセルを中心とするグライダーを挿入するようにしましょう。 <code>Shift + クリック</code> でパルサーを挿入するようにしましょう。</li>
+</ul>
+</blockquote>
 <h1><a class="header" href="#time-profiling" id="time-profiling">Time Profiling</a></h1>
 <p>In this chapter, we will improve the performance of our Game of Life
 implementation. We will use time profiling to guide our efforts.</p>

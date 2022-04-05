@@ -5,8 +5,6 @@
 use wasm_bindgen_test::*;
 use wasm_game_of_life::Universe;
 
-wasm_bindgen_test_configure!(run_in_browser);
-
 #[cfg(test)]
 pub fn input_spaceship() -> Universe {
     let mut universe = Universe::new(6, 6);

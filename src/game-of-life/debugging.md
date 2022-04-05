@@ -5,6 +5,8 @@ belt for when things go wrong. Take a moment to review the [reference page
 listing tools and approaches available for debugging Rust-generated
 WebAssembly][reference-debugging].
 
+> さらにコードを書いていく前に、うまくいかないときのためにデバッグツールを用意しておくとよいでしょう。 [Rust で生成された WebAssembly をデバッグするために利用できるツールやアプローチの一覧は、リファレンスページをご覧ください。][reference-debugging]
+
 [reference-debugging]: ../reference/debugging.html
 
 ## Enable Logging for Panics
@@ -17,6 +19,10 @@ on [the `console_error_panic_hook` crate][panic-hook] that is configured in
 `wasm-game-of-life/src/utils.rs`. All we need to do is install the hook in an
 initialization function or common code path. We can call it inside the
 `Universe::new` constructor in `wasm-game-of-life/src/lib.rs`:
+
+> [コードがパニックに陥ったとき、開発者コンソールに有益なエラーメッセージが表示されるようにしたいです。](../reference/debugging.html#logging-panics)
+>
+> `wasm-pack-template` には、オプション（デフォルト有効）で [`console_error_panic_hook` クレート](panic-hook) に依存しており、これは `wasm-game-of-life/src/utils.rs` で構成されています。必要なことは、初期化関数や共通のコードパスにフックをインストールすることだけです。 `wasm-game-of-life/src/lib.rs` にある `Universe::new` コンストラクタの中で呼び出すことができます。
 
 ```rust
 pub fn new() -> Universe {
@@ -36,6 +42,10 @@ logging][logging] about each cell in our `Universe::tick` function.
 First, add `web-sys` as a dependency and enable its `"console"` feature in
 `wasm-game-of-life/Cargo.toml`:
 
+> `Universe::tick` 関数で各セルに関するログを追加するために、 [`web-sys` クレートを介して `console.log` 関数を使用][logging]してみましょう。
+>
+> まず、 `web-sys` を依存関係として追加し、 `wasm-game-of-life/Cargo.toml` でその `"console"` 機能を有効にします。
+
 ```toml
 [dependencies]
 
@@ -50,6 +60,8 @@ features = [
 
 For ergonomics, we'll wrap the `console.log` function up in a `println!`-style
 macro:
+
+> 人間工学を考慮して、 `console.log` 関数を `println!` スタイルのマクロでラップしてみましょう。
 
 [logging]: ../reference/debugging.html#logging-with-the-console-apis
 
@@ -67,6 +79,8 @@ macro_rules! log {
 Now, we can start logging messages to the console by inserting calls to `log` in
 Rust code. For example, to log each cell's state, live neighbors count, and next
 state, we could modify `wasm-game-of-life/src/lib.rs` like this:
+
+> これで、 Rust のコードに `log` の呼び出しを挿入して、コンソールへのメッセージロギングを始められます。たとえば、各セルの状態、生存隣接セル数、次の状態をログ出力するには、 `wasm-game-of-life/src/lib.rs` を以下のように変更します。
 
 ```diff
 diff --git a/src/lib.rs b/src/lib.rs
@@ -109,6 +123,10 @@ For example, we can use the debugger to pause on each iteration of our
 `renderLoop` function by placing [a JavaScript `debugger;` statement][dbg-stmt]
 above our call to `universe.tick()`.
 
+> [ブラウザーのステッピングデバッガは、 Rust で生成された WebAssembly と相互作用する JavaScript を検査（inspect）するのに便利です。](../reference/debugging.html#using-a-debugger)
+>
+> たとえば、 `universe.tick()` の呼び出し直前に [JavaScript の `debugger;` ステートメント][dbg-stmt] を置いて、 `renderLoop` 関数の各イテレーションで一時停止するためにデバッガを利用できます。
+
 ```js
 const renderLoop = () => {
   debugger;
@@ -124,6 +142,8 @@ const renderLoop = () => {
 This provides us with a convenient checkpoint for inspecting logged messages,
 and comparing the currently rendered frame to the previous one.
 
+> これにより、ログに記録されたメッセージを検査したり、現在レンダリングされているフレームと前のフレームを比較したりするのに便利なチェックポイントが提供されます。
+
 [dbg-stmt]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger
 
 [![Screenshot of debugging the Game of Life](../images/game-of-life/debugging.png)](../images/game-of-life/debugging.png)
@@ -137,3 +157,7 @@ and comparing the currently rendered frame to the previous one.
   backtrace in your Web browser's JavaScript debugger. Disable debug symbols,
   rebuild without the `console_error_panic_hook` optional dependency, and
   inspect the stack trace again. Not as useful is it?
+
+
+> - `tick` 機能にログを追加し、生から死、またはその逆へと状態が遷移した各セルの行と列を記録しましょう。
+> - `Universe::new` メソッドに `panic!()` を導入しましょう。 Web ブラウザーの JavaScript デバッガで panic のバックトレースを検査します。デバッグシンボルを無効にし、オプションの依存関係 `console_error_panic_hook` なしで再構築し、再びスタックトレースを検査します。不便でしょ？
